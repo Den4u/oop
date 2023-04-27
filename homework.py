@@ -23,7 +23,6 @@ class Training:
     """Базовый класс тренировки."""
     LEN_STEP = 0.65
     M_IN_KM = 1000
-    TRAINING_TYPE = ''
     MIN_IN_HOUR = 60
 
     def __init__(self,
@@ -36,13 +35,11 @@ class Training:
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
-        distance = self.action * self.LEN_STEP / self.M_IN_KM
-        return distance
+        return self.action * self.LEN_STEP / self.M_IN_KM
 
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения."""
-        speed = self.get_distance() / self.duration
-        return speed
+        return self.get_distance() / self.duration
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
@@ -62,7 +59,6 @@ class Running(Training):
     """Тренировка: бег."""
     CALORIES_MEAN_SPEED_MULTIPLIER = 18
     CALORIES_MEAN_SPEED_SHIFT = 1.79
-    TRAINING_TYPE = 'RUN'
 
     def get_spent_calories(self) -> float:
         calories = ((self.CALORIES_MEAN_SPEED_MULTIPLIER
@@ -74,11 +70,10 @@ class Running(Training):
 
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
-    COEFF_WLK_1 = 0.035
-    COEFF_WLK_2 = 0.029
+    COEFFICIENT_WLK_1 = 0.035
+    COEFFICIENT_WLK_2 = 0.029
     KM_H_IN_M_S = 0.278
     SM_IN_M = 100
-    TRAINING_TYPE = 'WLK'
 
     def __init__(self, action: int,
                  duration: float,
@@ -88,21 +83,20 @@ class SportsWalking(Training):
         self.height = height
 
     def get_spent_calories(self) -> float:
-        calories = ((self.COEFF_WLK_1
+        calories = ((self.COEFFICIENT_WLK_1
                     * self.weight
                     + ((self.get_mean_speed() * self.KM_H_IN_M_S)**2
                      / (self.height / self.SM_IN_M))
-                    * self.COEFF_WLK_2 * self.weight)
+                    * self.COEFFICIENT_WLK_2 * self.weight)
                     * (self.duration * self.MIN_IN_HOUR))
         return calories
 
 
 class Swimming(Training):
     """Тренировка: плавание."""
-    COEFF_SWM_1 = 1.1
-    COEFF_SWM_2 = 2
+    COEFFICIENT_SWM_1 = 1.1
+    COEFFICIENT_SWM_2 = 2
     LEN_STEP = 1.38
-    TRAINING_TYPE = 'SWM'
 
     def __init__(self, action: int,
                  duration: float,
@@ -121,8 +115,8 @@ class Swimming(Training):
         return speed
 
     def get_spent_calories(self) -> float:
-        calories = ((self.get_mean_speed() + 1.1)
-                    * 2 * self.weight * self.duration)
+        calories = ((self.get_mean_speed() + self.COEFFICIENT_SWM_1)
+                    * self.COEFFICIENT_SWM_2 * self.weight * self.duration)
         return calories
 
 
